@@ -1189,6 +1189,11 @@ def update_hunters(dt):
             ang = h["roam"]
 
         speed = h["speed"] * (1.2 if chasing else 0.45)
+        # FIX: stop at arm's length. Before, a hunter walked right into the
+        # player's body, where bullets (spawned 42 units ahead) could never
+        # hit it. At 46 it still touches us (d < 52) but can be shot.
+        if chasing and d < 46:
+            speed = 0.0
         nx = h["x"] + math.cos(ang) * speed * dt
         ny = h["y"] + math.sin(ang) * speed * dt
 
