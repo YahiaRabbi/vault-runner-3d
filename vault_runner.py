@@ -356,7 +356,9 @@ def draw_minimap():
     for row in range(grid_h):
         for col in range(grid_w):
             x0 = ox + col * cw
-            y0 = oy + (grid_h - row - 1) * ch     # flip Y so it matches the world
+            # POLISH: no Y flip. World +Y = map up, exactly like looking down
+            # from above, so turning left in 3D also turns left on the map.
+            y0 = oy + row * ch
             cell = grid[row][col]
             if cell == "#":
                 glColor3f(*WALL_COLOR[stage_no])
@@ -371,17 +373,28 @@ def draw_minimap():
     glEnd()
 
     # dots
-    pc, pr = tile_at(hero["x"], hero["y"])
-    map_dot(ox + pc * cw + cw * 0.5, oy + (grid_h - pr - 1) * ch + ch * 0.5,
-            5, (0.15, 1.00, 0.30))                       # player = green
     if gate_tile:
         map_dot(ox + gate_tile[0] * cw + cw * 0.5,
-                oy + (grid_h - gate_tile[1] - 1) * ch + ch * 0.5,
+                oy + gate_tile[1] * ch + ch * 0.5,
                 4, (0.15, 0.80, 1.00))                   # gate = blue
         if not hero["has_key"]:
             map_dot(ox + key_tile[0] * cw + cw * 0.5,
-                    oy + (grid_h - key_tile[1] - 1) * ch + ch * 0.5,
+                    oy + key_tile[1] * ch + ch * 0.5,
                     4, (1.00, 0.90, 0.10))               # keycard = yellow
+
+    # POLISH: the player dot uses the exact world position (smooth, not
+    # snapped to a cell): world units -> cells -> minimap pixels
+    px = ox + (hero["x"] - origin_x) / TILE * cw
+    py = oy + (hero["y"] - origin_y) / TILE * ch
+    # POLISH: a short heading line shows which way the player is facing
+    glLineWidth(2)
+    glColor3f(0.15, 1.00, 0.30)
+    glBegin(GL_LINES)
+    glVertex3f(px, py, 0)
+    glVertex3f(px + math.cos(hero["yaw"]) * 13, py + math.sin(hero["yaw"]) * 13, 0)
+    glEnd()
+    glLineWidth(1)
+    map_dot(px, py, 4, (0.15, 1.00, 0.30))               # player = green
 
     end_2d()
 
@@ -570,8 +583,11 @@ def update_pickups(dt):
         item["spin"] += 120 * dt
 
     # health packs
+    # POLISH: a health pack is only used if we are actually hurt,
+    # so it is not wasted when health is already full
     for item in medkits[:]:
-        if dist2(hero["x"], hero["y"], item["x"], item["y"]) < (ITEM_R + BODY_R) ** 2:
+        if hero["hp"] < MAX_HP and \
+           dist2(hero["x"], hero["y"], item["x"], item["y"]) < (ITEM_R + BODY_R) ** 2:
             hero["hp"] = min(float(MAX_HP), hero["hp"] + item["heal"])
             medkits.remove(item)
             say("Health restored", 1.1)
@@ -942,7 +958,13 @@ def build_stage(number, keep_items=True):
     hero["x"] = sx
     hero["y"] = sy
     hero["z"] = 42.0
+    # POLISH: start facing an open corridor instead of a wall
     hero["yaw"] = 0.0
+    for ang in (0.0, math.pi / 2, -math.pi / 2, math.pi):
+        if not is_wall_tile(start_tile[0] + round(math.cos(ang)),
+                            start_tile[1] + round(math.sin(ang))):
+            hero["yaw"] = ang
+            break
     hero["pitch"] = 0.0
     hero["has_key"] = False
     hero["shot_cd"] = 0.0
@@ -1189,6 +1211,11 @@ def update_hunters(dt):
             ang = h["roam"]
 
         speed = h["speed"] * (1.2 if chasing else 0.45)
+        # FIX: stop at arm's length. Before, a hunter walked right into the
+        # player's body, where bullets (spawned 42 units ahead) could never
+        # hit it. At 46 it still touches us (d < 52) but can be shot.
+        if chasing and d < 46:
+            speed = 0.0
         nx = h["x"] + math.cos(ang) * speed * dt
         ny = h["y"] + math.sin(ang) * speed * dt
 
@@ -1359,7 +1386,9 @@ def update_warden(dt):
         for i in range(count):
             ang = base + (i - count // 2) * 0.12
             foe_shots.append({
-                "x": warden["x"], "y": warden["y"], "z": 120,
+                # FIX: was z = 120, above the player hit zone (0 < z < 105),
+                # so the bullet fan could never hit. 75 = chest height.
+                "x": warden["x"], "y": warden["y"], "z": 75,
                 "vx": math.cos(ang) * (240 + warden["phase"] * 35),
                 "vy": math.sin(ang) * (240 + warden["phase"] * 35),
                 "vz": 0.0,
