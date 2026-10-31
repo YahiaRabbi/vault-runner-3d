@@ -356,7 +356,9 @@ def draw_minimap():
     for row in range(grid_h):
         for col in range(grid_w):
             x0 = ox + col * cw
-            y0 = oy + (grid_h - row - 1) * ch     # flip Y so it matches the world
+            # POLISH: no Y flip. World +Y = map up, exactly like looking down
+            # from above, so turning left in 3D also turns left on the map.
+            y0 = oy + row * ch
             cell = grid[row][col]
             if cell == "#":
                 glColor3f(*WALL_COLOR[stage_no])
@@ -372,15 +374,15 @@ def draw_minimap():
 
     # dots
     pc, pr = tile_at(hero["x"], hero["y"])
-    map_dot(ox + pc * cw + cw * 0.5, oy + (grid_h - pr - 1) * ch + ch * 0.5,
+    map_dot(ox + pc * cw + cw * 0.5, oy + pr * ch + ch * 0.5,
             5, (0.15, 1.00, 0.30))                       # player = green
     if gate_tile:
         map_dot(ox + gate_tile[0] * cw + cw * 0.5,
-                oy + (grid_h - gate_tile[1] - 1) * ch + ch * 0.5,
+                oy + gate_tile[1] * ch + ch * 0.5,
                 4, (0.15, 0.80, 1.00))                   # gate = blue
         if not hero["has_key"]:
             map_dot(ox + key_tile[0] * cw + cw * 0.5,
-                    oy + (grid_h - key_tile[1] - 1) * ch + ch * 0.5,
+                    oy + key_tile[1] * ch + ch * 0.5,
                     4, (1.00, 0.90, 0.10))               # keycard = yellow
 
     end_2d()
