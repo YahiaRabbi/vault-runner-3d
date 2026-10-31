@@ -373,9 +373,6 @@ def draw_minimap():
     glEnd()
 
     # dots
-    pc, pr = tile_at(hero["x"], hero["y"])
-    map_dot(ox + pc * cw + cw * 0.5, oy + pr * ch + ch * 0.5,
-            5, (0.15, 1.00, 0.30))                       # player = green
     if gate_tile:
         map_dot(ox + gate_tile[0] * cw + cw * 0.5,
                 oy + gate_tile[1] * ch + ch * 0.5,
@@ -384,6 +381,20 @@ def draw_minimap():
             map_dot(ox + key_tile[0] * cw + cw * 0.5,
                     oy + key_tile[1] * ch + ch * 0.5,
                     4, (1.00, 0.90, 0.10))               # keycard = yellow
+
+    # POLISH: the player dot uses the exact world position (smooth, not
+    # snapped to a cell): world units -> cells -> minimap pixels
+    px = ox + (hero["x"] - origin_x) / TILE * cw
+    py = oy + (hero["y"] - origin_y) / TILE * ch
+    # POLISH: a short heading line shows which way the player is facing
+    glLineWidth(2)
+    glColor3f(0.15, 1.00, 0.30)
+    glBegin(GL_LINES)
+    glVertex3f(px, py, 0)
+    glVertex3f(px + math.cos(hero["yaw"]) * 13, py + math.sin(hero["yaw"]) * 13, 0)
+    glEnd()
+    glLineWidth(1)
+    map_dot(px, py, 4, (0.15, 1.00, 0.30))               # player = green
 
     end_2d()
 
