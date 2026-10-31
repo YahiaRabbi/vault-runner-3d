@@ -1359,7 +1359,9 @@ def update_warden(dt):
         for i in range(count):
             ang = base + (i - count // 2) * 0.12
             foe_shots.append({
-                "x": warden["x"], "y": warden["y"], "z": 120,
+                # FIX: was z = 120, above the player hit zone (0 < z < 105),
+                # so the bullet fan could never hit. 75 = chest height.
+                "x": warden["x"], "y": warden["y"], "z": 75,
                 "vx": math.cos(ang) * (240 + warden["phase"] * 35),
                 "vy": math.sin(ang) * (240 + warden["phase"] * 35),
                 "vz": 0.0,
