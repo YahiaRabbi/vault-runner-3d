@@ -583,8 +583,11 @@ def update_pickups(dt):
         item["spin"] += 120 * dt
 
     # health packs
+    # POLISH: a health pack is only used if we are actually hurt,
+    # so it is not wasted when health is already full
     for item in medkits[:]:
-        if dist2(hero["x"], hero["y"], item["x"], item["y"]) < (ITEM_R + BODY_R) ** 2:
+        if hero["hp"] < MAX_HP and \
+           dist2(hero["x"], hero["y"], item["x"], item["y"]) < (ITEM_R + BODY_R) ** 2:
             hero["hp"] = min(float(MAX_HP), hero["hp"] + item["heal"])
             medkits.remove(item)
             say("Health restored", 1.1)
@@ -955,7 +958,13 @@ def build_stage(number, keep_items=True):
     hero["x"] = sx
     hero["y"] = sy
     hero["z"] = 42.0
+    # POLISH: start facing an open corridor instead of a wall
     hero["yaw"] = 0.0
+    for ang in (0.0, math.pi / 2, -math.pi / 2, math.pi):
+        if not is_wall_tile(start_tile[0] + round(math.cos(ang)),
+                            start_tile[1] + round(math.sin(ang))):
+            hero["yaw"] = ang
+            break
     hero["pitch"] = 0.0
     hero["has_key"] = False
     hero["shot_cd"] = 0.0
