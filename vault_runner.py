@@ -304,10 +304,19 @@ def box(x, y, z, sx, sy, sz, color):
     glPopMatrix()
 
 
+_quadric = None
+
+
 def tube(length, radius, color):
     """Draw a cylinder along the current Z axis (arms, legs, gun barrel)."""
+    global _quadric
+    # FIX: create the GLU quadric once and reuse it. gluNewQuadric() allocates
+    # a new object on every call and tube() runs 14-18 times per frame, so the
+    # old code leaked about 50,000 quadrics per minute of play.
+    if _quadric is None:
+        _quadric = gluNewQuadric()
     glColor3f(*color)
-    gluCylinder(gluNewQuadric(), radius, radius * 0.85, length, 10, 2)
+    gluCylinder(_quadric, radius, radius * 0.85, length, 10, 2)
 
 
 def draw_hp_bar(z, hp, max_hp, width):
