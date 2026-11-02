@@ -134,7 +134,16 @@ for h in list(g.hunters):
     before = len(g.hunters); g.kill_enemy(h, "hunter"); resp += len(g.hunters) - before
 print(f"   stage 2: {n} hunters killed, {resp} respawned")
 
-# 11. full-session soak: random play for 3 minutes per stage, look for crashes
+# 11. arrow keys: holding LEFT keeps turning (GLUT ignores key repeat)
+g.start_new_game(); clear_enemies()
+y0 = g.hero["yaw"]
+g.specialKeyListener(g.GLUT_KEY_LEFT, 0, 0); step(60)
+if hasattr(g, "specialKeyUpListener"):
+    g.specialKeyUpListener(g.GLUT_KEY_LEFT, 0, 0)
+turned = g.hero["yaw"] - y0
+check("holding LEFT for 1 s turns continuously", turned > 1.0, f"turned {turned:.2f} rad")
+
+# 12. full-session soak: random play for 3 minutes per stage, look for crashes
 for s in (1, 2, 3, 4):
     g.build_stage(s, keep_items=False); g.cheat_mode = True
     keys = [b'w', b'a', b's', b'd']
