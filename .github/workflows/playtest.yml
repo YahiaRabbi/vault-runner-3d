@@ -1,0 +1,31 @@
+name: Playtests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  playtest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install GLUT
+        run: sudo apt-get update && sudo apt-get install -y freeglut3-dev
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Gameplay checks (33)
+        run: python tools/playtest/logic_test.py
+
+      - name: Regression - boss bullets hit the player
+        run: python tools/playtest/boss_test.py
+
+      - name: Regression - point-blank hunters can be shot
+        run: python tools/playtest/hunter_test.py
