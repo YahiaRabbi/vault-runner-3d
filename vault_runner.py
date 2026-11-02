@@ -42,6 +42,7 @@ camera_pos = (0, 500, 500)
 # 2. GLOBAL GAME STATE
 
 pressed_keys = set()
+held_arrows = set()       # arrow keys currently held down
 prev_time = 0.0
 clock = 0.0
 
@@ -304,10 +305,19 @@ def box(x, y, z, sx, sy, sz, color):
     glPopMatrix()
 
 
+_quadric = None
+
+
 def tube(length, radius, color):
     """Draw a cylinder along the current Z axis (arms, legs, gun barrel)."""
+    global _quadric
+    # FIX: create the GLU quadric once and reuse it. gluNewQuadric() allocates
+    # a new object on every call and tube() runs 14-18 times per frame, so the
+    # old code leaked about 50,000 quadrics per minute of play.
+    if _quadric is None:
+        _quadric = gluNewQuadric()
     glColor3f(*color)
-    gluCylinder(gluNewQuadric(), radius, radius * 0.85, length, 10, 2)
+    gluCylinder(_quadric, radius, radius * 0.85, length, 10, 2)
 
 
 def draw_hp_bar(z, hp, max_hp, width):
@@ -664,6 +674,17 @@ def move_hero(dt):
     if b'e' in pressed_keys:
         hero["yaw"] -= SPIN_SPEED * dt
 
+    # FIX: key repeat is ignored (glutIgnoreKeyRepeat), so arrow keys are
+    # tracked while held and turn / look continuously, like Q and E
+    if GLUT_KEY_LEFT in held_arrows:
+        hero["yaw"] += SPIN_SPEED * dt
+    if GLUT_KEY_RIGHT in held_arrows:
+        hero["yaw"] -= SPIN_SPEED * dt
+    if GLUT_KEY_UP in held_arrows:
+        hero["pitch"] = clamp(hero["pitch"] + 1.1 * dt, -0.55, 0.45)
+    if GLUT_KEY_DOWN in held_arrows:
+        hero["pitch"] = clamp(hero["pitch"] - 1.1 * dt, -0.55, 0.45)
+
     yaw = hero["yaw"]
     dx = math.cos(yaw) * forward * WALK_SPEED * dt
     dy = math.sin(yaw) * forward * WALK_SPEED * dt
@@ -902,15 +923,13 @@ def keyboardUpListener(key, x, y):
 
 
 def specialKeyListener(key, x, y):
-    """Arrow keys turn the camera left/right and look up/down."""
-    if key == GLUT_KEY_LEFT:
-        hero["yaw"] += 0.08
-    elif key == GLUT_KEY_RIGHT:
-        hero["yaw"] -= 0.08
-    elif key == GLUT_KEY_UP:
-        hero["pitch"] = clamp(hero["pitch"] + 0.04, -0.55, 0.45)
-    elif key == GLUT_KEY_DOWN:
-        hero["pitch"] = clamp(hero["pitch"] - 0.04, -0.55, 0.45)
+    """An arrow key was pressed: it turns / looks while it is held."""
+    held_arrows.add(key)
+
+
+def specialKeyUpListener(key, x, y):
+    """An arrow key was released."""
+    held_arrows.discard(key)
 
 
 def mouseListener(button, state, x, y):
@@ -1711,6 +1730,7 @@ def main():
     glutKeyboardFunc(keyboardListener)
     glutKeyboardUpFunc(keyboardUpListener)     # needed for smooth movement
     glutSpecialFunc(specialKeyListener)
+    glutSpecialUpFunc(specialKeyUpListener)    # needed for held arrow keys
     glutMouseFunc(mouseListener)
     glutIdleFunc(idle)
 
