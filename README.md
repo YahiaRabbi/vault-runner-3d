@@ -147,3 +147,13 @@ vault-runner-3d/
 | **Yahia Rabbi** | 1 · Real-time minimap, 2 · Screen-space HUD, 3 · Pickups & acid hazard |
 | **Aloke Ankur** | 4 · Maze collision & wall sliding, 5 · Dual camera, 6 · Keycard, gate & stages |
 | **ASM Najmus Sakib Khan** | 7 · Guard & alien AI, 8 · Hunter AI, 9 · Two-phase boss fight & projectiles |
+
+---
+
+<div align="center">
+
+[Changelog](CHANGELOG.md) · [Contributing](CONTRIBUTING.md) · [How it works](docs/HOW_IT_WORKS.md) · [Tools](tools/README.md)
+
+Final project for **CSE423 · Computer Graphics**. Built with Python, PyOpenGL and GLUT.
+
+</div>
