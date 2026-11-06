@@ -47,3 +47,23 @@ https://github.com/user-attachments/assets/b0d7b4f0-2365-45a8-9208-d6491291031d
 | 7 | **Guard & alien AI** | Scanning turrets that spot you by line of sight and fire on a timer | [▶ 9 s](media/videos/07_guard_and_alien_ai.mp4) |
 | 8 | **Hunter AI** | Roam until they see you, then charge; they can respawn on stages 2–3 | [▶ 13 s](media/videos/08_hunter_ai.mp4) |
 | 9 | **Two-phase boss fight** | The Warden fires bullet fans and slams the ground, and gets faster below 55% health | [▶ 12 s](media/videos/09_two_phase_boss_fight.mp4) |
+
+## 🧠 How it works
+
+No coding background needed. The full illustrated guide is in **[docs/HOW_IT_WORKS.md](docs/HOW_IT_WORKS.md)**.
+
+**The game is a loop.** About 60 times a second it reads your keys, moves everything, checks collisions, and draws a new picture. Every movement is scaled by the time that passed (`dt`), so the game runs at the same speed on a fast or a slow computer.
+
+![The game loop](docs/sketches/game-loop.svg)
+
+**Every frame is two layers:** the 3D world through a perspective camera, then a flat HUD painted on top, like a speedometer on a car windshield.
+
+![Two layers](docs/sketches/screen-layers.svg)
+
+**The minimap shrinks the world** in two steps: world position ÷ tile size gives a grid cell, and grid cell × pixels per cell gives a minimap pixel.
+
+![Minimap math](docs/sketches/minimap-math.svg)
+
+**Walls are solid** because the player's body is tested at 9 points before every step, and sideways and forward motion are checked separately so you slide along walls.
+
+![Collision](docs/sketches/collision.svg)
