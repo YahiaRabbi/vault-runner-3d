@@ -67,3 +67,14 @@ No coding background needed. The full illustrated guide is in **[docs/HOW_IT_WOR
 **Walls are solid** because the player's body is tested at 9 points before every step, and sideways and forward motion are checked separately so you slide along walls.
 
 ![Collision](docs/sketches/collision.svg)
+
+## 🗺️ Four stages
+
+![The four stages](docs/sketches/stages.svg)
+
+| Stage | Name | You face |
+|---|---|---|
+| 1 | Guard Post | 7 guard turrets, 2 aliens |
+| 2 | Hunter Halls | 8 hunters that can respawn, 3 aliens |
+| 3 | Crossfire Grid | 8 guards and 8 hunters at once, 4 aliens |
+| 4 | Warden Arena | The two-phase boss, acid pools, 3 aliens |
