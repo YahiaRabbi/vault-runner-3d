@@ -2,9 +2,18 @@
 
 All notable changes to Vault Runner 3D are listed here.
 
-## [Unreleased]
+## [1.0.0] - 2026-11-06
+
+First public release.
 
 ### Added
+- A new README: hero GIF, embedded showcase video, feature gallery, and illustrated explanations.
+- [docs/HOW_IT_WORKS.md](docs/HOW_IT_WORKS.md): an illustrated guide to how the game works, written for non-programmers.
+- Seven hand-drawn explainer sketches in `docs/sketches/`.
+- A contributing guide, an issue template and a pull request template.
+- A social preview image (`media/social-preview.png`).
+
+### Added (development)
 - Automated playtest suite in `tools/playtest/`: 32 headless gameplay checks (`logic_test.py`) plus two bug-reproduction scripts (`boss_test.py`, `hunter_test.py`).
 - A 33rd check for held arrow keys ([#8](https://github.com/YahiaRabbi/vault-runner-3d/pull/8)).
 - Continuous integration: GitHub Actions runs every playtest on each push and pull request.
