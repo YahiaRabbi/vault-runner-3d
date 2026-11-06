@@ -140,8 +140,6 @@ vault-runner-3d/
 
 ## 👥 Team
 
-![Team](docs/sketches/team.svg)
-
 | Member | Features |
 |---|---|
 | **Yahia Rabbi** | 1 · Real-time minimap, 2 · Screen-space HUD, 3 · Pickups & acid hazard |
