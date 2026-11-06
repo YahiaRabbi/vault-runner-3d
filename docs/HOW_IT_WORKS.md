@@ -44,3 +44,35 @@ The minimap first drew row 0 at the top, so it matched how the maze looks in the
 
 - The player's body is a circle. Before every step, the game checks **9 points** on and inside that circle (the centre plus 8 around the edge). If any point would land inside a wall tile, that step is not allowed.
 - Sideways and forward movement are checked **separately**. If you walk diagonally into a wall, the part of the move that goes into the wall is blocked, but the part that runs along the wall still happens, so you *slide* instead of getting stuck.
+
+## 5. Enemies and the boss
+
+- **Guards and aliens** stand still and slowly turn their heads. Every frame they "look" toward you by testing small steps along a straight line. If no step hits a wall, they can see you, so they turn to face you and fire.
+- **Hunters** walk around randomly until they can see you, then run at you. If you defeat one on stages 2–3, there is a 35% chance another one appears somewhere else.
+- **The Warden** (the final boss) fires a fan of 8 bullets. Below 55% health it gets angry: 12 bullets, faster, and more often. It also slams the ground if you get too close.
+
+## 6. Four stages
+
+![Stages](sketches/stages.svg)
+
+Each stage is just a different grid of letters. Stages 1–3 hide a keycard somewhere random. The exit gate stays locked (red) until you pick it up, then turns cyan and takes you to the next stage. Stage 4 has no gate: you have to beat the Warden while avoiding the acid pools.
+
+## 7. How we know it works: a robot tester
+
+![Robot tester](sketches/robot-tester.svg)
+
+Instead of only playing the game by hand, we wrote small programs that **play the real game automatically**, without opening a window, and check the results: Is every floor tile reachable? Does the keycard open the gate? Does acid burn exactly 22 per second at both 30 and 144 frames per second? Does the boss actually hurt you?
+
+That robot found **6 real bugs**. Each one became a GitHub issue, was fixed on its own branch, and was merged through a pull request after the robot passed again. Now GitHub runs the same robot automatically on every change (that's the green check mark next to each commit).
+
+## Glossary
+
+| Word | Meaning |
+|---|---|
+| Frame | One picture of the game. About 60 per second. |
+| `dt` (delta time) | How many seconds passed since the last frame. Used so speed doesn't depend on the computer. |
+| Perspective camera | Draws far things smaller, like a real camera. |
+| HUD | "Heads-up display": the health, ammo and map painted over the game. |
+| Depth test | The graphics card's way of letting near objects hide far objects. |
+| Tile | One square of the maze grid (120 × 120 units in the world). |
+| CI | "Continuous integration": GitHub automatically runs the tests on every change. |
