@@ -137,3 +137,13 @@ vault-runner-3d/
 ├── media/                   # GIFs, feature clips, showcase video
 └── .github/workflows/       # CI: runs the playtests on every push and PR
 ```
+
+## 👥 Team
+
+![Team](docs/sketches/team.svg)
+
+| Member | Features |
+|---|---|
+| **Yahia Rabbi** | 1 · Real-time minimap, 2 · Screen-space HUD, 3 · Pickups & acid hazard |
+| **Aloke Ankur** | 4 · Maze collision & wall sliding, 5 · Dual camera, 6 · Keycard, gate & stages |
+| **ASM Najmus Sakib Khan** | 7 · Guard & alien AI, 8 · Hunter AI, 9 · Two-phase boss fight & projectiles |
