@@ -99,3 +99,24 @@ python tools/playtest/logic_test.py    # 33 gameplay checks
 python tools/playtest/boss_test.py     # boss bullets hit the player
 python tools/playtest/hunter_test.py   # point-blank hunters can be shot
 ```
+
+## 🕹️ Play it
+
+```bash
+git clone https://github.com/YahiaRabbi/vault-runner-3d.git
+cd vault-runner-3d
+pip install -r requirements.txt
+python vault_runner.py
+```
+
+GLUT must be installed too. On Linux: `sudo apt install freeglut3-dev`. On Windows: use the same PyOpenGL + freeglut setup as the CSE423 lab.
+
+| Key | Action |
+|---|---|
+| `W` `A` `S` `D` | Move and strafe |
+| `Q` / `E` or `←` / `→` | Turn |
+| `↑` / `↓` | Look up / down |
+| `Space` or left click | Shoot |
+| `C` or right click | Switch first / third person |
+| `G` | Cheat mode (unlimited health and ammo) |
+| `R` | Restart |
