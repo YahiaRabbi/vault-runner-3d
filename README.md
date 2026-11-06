@@ -120,3 +120,20 @@ GLUT must be installed too. On Linux: `sudo apt install freeglut3-dev`. On Windo
 | `C` or right click | Switch first / third person |
 | `G` | Cheat mode (unlimited health and ammo) |
 | `R` | Restart |
+
+## 📁 Project structure
+
+```
+vault-runner-3d/
+├── vault_runner.py          # the whole game: world, rendering, AI, HUD, main loop
+├── requirements.txt
+├── tools/
+│   ├── playtest/            # headless gameplay tests (run in CI)
+│   ├── recording/           # autopilot that records the feature clips + post-production
+│   └── soundtrack/          # the procedural synthwave soundtrack
+├── docs/
+│   ├── HOW_IT_WORKS.md      # illustrated guide for non-programmers
+│   └── sketches/            # the explainer drawings
+├── media/                   # GIFs, feature clips, showcase video
+└── .github/workflows/       # CI: runs the playtests on every push and PR
+```
