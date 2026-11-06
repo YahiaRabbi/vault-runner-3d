@@ -21,3 +21,11 @@
 Two minutes, all 9 features, with an original soundtrack (turn the sound on).
 
 https://github.com/user-attachments/assets/b0d7b4f0-2365-45a8-9208-d6491291031d
+
+## ✨ Why this project is different
+
+| | |
+|---|---|
+| 🧱 **No game engine** | Every wall, enemy, bullet, camera and HUD element is drawn by hand with OpenGL calls and matrix transforms. No Unity, no Godot, no Pygame. |
+| 🤖 **Tested by a robot** | A bot plays the real game headless and checks 33 rules. It found **6 real bugs**, each fixed through an issue and a pull request, and GitHub re-runs it on every change. |
+| 🎵 **Even the music is code** | The soundtrack is synthesized from scratch with NumPy, and the beat drop is timed to land on the first frame of the boss fight. |
