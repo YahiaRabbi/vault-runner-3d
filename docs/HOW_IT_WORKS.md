@@ -25,3 +25,22 @@ The picture you see is painted in two passes:
 - **The HUD** (health, ammo, score, crosshair, minimap) is painted last, as a flat 2D layer, like stickers on a window. Depth is switched off for this pass so nothing in the world can ever cover it.
 
 Switching between these two "modes" is done with OpenGL's *projection matrix*: a perspective one for the world (`gluPerspective`), and a flat one that maps straight to screen pixels for the HUD (`gluOrtho2D`).
+
+## 3. The minimap: shrinking the world
+
+![Minimap math](sketches/minimap-math.svg)
+
+The maze is stored as a grid of letters (`#` is a wall, `.` is floor). The minimap redraws that grid, very small, in the corner of the screen, and puts dots on it:
+
+1. **World → grid:** divide the player's position by the size of one tile (120 units). 1,020 units from the left edge is column 8.5.
+2. **Grid → pixels:** multiply by the size of one minimap cell (about 10 pixels) and add the minimap's corner position.
+3. **Which way you face:** a short line from your dot, pointing along your turning angle. Its direction is `(cos a, sin a)`, the standard way to turn an angle into a direction.
+
+The minimap first drew row 0 at the top, so it matched how the maze looks in the code. But in the 3D world, row 0 is at the *bottom* when you look down from above, so the map was secretly a mirror image. The robot tester caught that, and it was fixed in [issue #3](https://github.com/YahiaRabbi/vault-runner-3d/issues/3).
+
+## 4. Walls you can't walk through
+
+![Collision](sketches/collision.svg)
+
+- The player's body is a circle. Before every step, the game checks **9 points** on and inside that circle (the centre plus 8 around the edge). If any point would land inside a wall tile, that step is not allowed.
+- Sideways and forward movement are checked **separately**. If you walk diagonally into a wall, the part of the move that goes into the wall is blocked, but the part that runs along the wall still happens, so you *slide* instead of getting stuck.
