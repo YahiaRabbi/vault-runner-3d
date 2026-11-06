@@ -78,3 +78,24 @@ No coding background needed. The full illustrated guide is in **[docs/HOW_IT_WOR
 | 2 | Hunter Halls | 8 hunters that can respawn, 3 aliens |
 | 3 | Crossfire Grid | 8 guards and 8 hunters at once, 4 aliens |
 | 4 | Warden Arena | The two-phase boss, acid pools, 3 aliens |
+
+## 🤖 Tested by a robot
+
+![Robot tester](docs/sketches/robot-tester.svg)
+
+A playtest bot drives the real game module headless (no window) and checks maze reachability, keycard and gate logic, pickups, frame-rate independent acid damage, shooting, both boss phases, game over and restart, wall collision, held arrow keys, and a 3-minute random-play soak test on every stage.
+
+| Bug the robot found | Fix |
+|---|---|
+| Boss bullets spawned above the player's hit zone and could never hit ([#1](https://github.com/YahiaRabbi/vault-runner-3d/issues/1)) | [#5](https://github.com/YahiaRabbi/vault-runner-3d/pull/5) |
+| Hunters walked into the player's body, where bullets could not reach them ([#2](https://github.com/YahiaRabbi/vault-runner-3d/issues/2)) | [#5](https://github.com/YahiaRabbi/vault-runner-3d/pull/5) |
+| The minimap was a mirror image of the world ([#3](https://github.com/YahiaRabbi/vault-runner-3d/issues/3)) | [#5](https://github.com/YahiaRabbi/vault-runner-3d/pull/5) |
+| Health packs wasted at full HP; Stage 2 started facing a wall ([#4](https://github.com/YahiaRabbi/vault-runner-3d/issues/4)) | [#5](https://github.com/YahiaRabbi/vault-runner-3d/pull/5) |
+| A new GLU quadric leaked on every cylinder draw, about 50,000 per minute ([#6](https://github.com/YahiaRabbi/vault-runner-3d/issues/6)) | [#8](https://github.com/YahiaRabbi/vault-runner-3d/pull/8) |
+| Holding an arrow key turned only one small step ([#7](https://github.com/YahiaRabbi/vault-runner-3d/issues/7)) | [#8](https://github.com/YahiaRabbi/vault-runner-3d/pull/8) |
+
+```bash
+python tools/playtest/logic_test.py    # 33 gameplay checks
+python tools/playtest/boss_test.py     # boss bullets hit the player
+python tools/playtest/hunter_test.py   # point-blank hunters can be shot
+```
